@@ -35,7 +35,7 @@ def determine_cmc(concentrations, conductivities):
     return cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive
 
 def plot_cmc(concentrations, conductivities, cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, \
-     higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive):
+     higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive, notes):
      plt.scatter(concentrations,conductivities,color="k")
      plt.scatter(concentrations[0:lower_linearregion_index_inclusive+1], conductivities[0:lower_linearregion_index_inclusive+1], color="r")
      plt.scatter(concentrations[higher_linearregion_index_inclusive:len(concentrations)], conductivities[higher_linearregion_index_inclusive:len(concentrations)], color="g")
@@ -57,19 +57,22 @@ def plot_cmc(concentrations, conductivities, cmc, lower_slope, lower_intercept, 
      cmc_x.append(cmc)
      cmc_y.append(cmc*lower_slope + lower_intercept)
      plt.scatter(cmc_x, cmc_y, color="b")
+     plt.xlabel("Surfactant Concentration (mM)")
+     plt.ylabel("Conductivity (" + u"\u03bcS/cm)")
+     plt.title(notes)
      plt.show()
 
 
-def test_main():
+def test_main(notes):
     cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, higher_intercept, \
          higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
               higher_linearregion_index_inclusive = determine_cmc(TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES)
     plot_cmc(TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES, cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, \
-     higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive)
+     higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive, notes)
 
 
 if __name__ == "__main__":
-    test_main()
+    test_main("Undecyl Alanine in the Presence of Ethylenediamine Counterion\npH 8 at 298 K")
     
 
 
