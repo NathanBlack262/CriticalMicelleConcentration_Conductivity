@@ -1,5 +1,6 @@
 import math
 import statistics
+import matplotlib.pyplot as plt
 
 def determine_cmc(concentrations, conductivities):
     lower_rsqaured_optimized = 0
@@ -21,7 +22,35 @@ def determine_cmc(concentrations, conductivities):
     higher_slope, higher_intercept = statistics.linear_regression(concentrations[len(concentrations)-1:higher_linearregion_index_inclusive-1], \
          conductivities[len(concentrations)-1:higher_linearregion_index_inclusive-1])
     cmc = (higher_intercept - lower_intercept) / (lower_slope - higher_slope)
-    return cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, higher_intercept, higher_rsqaured_optimized
+    return cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive
+
+def plot_cmc(concentrations, conductivities, cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, \
+     higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive):
+     plt.scatter(concentrations,conductivities,color="k")
+     plt.scatter(concentrations[0:lower_linearregion_index_inclusive+1], conductivities[0:lower_linearregion_index_inclusive+1], "r")
+     plt.scatter(concentrations[higher_linearregion_index_inclusive:len(concentrations)], conductivities[higher_linearregion_index_inclusive:len(concentrations)], "g")
+     concentration_steprange = concentrations[len(concentrations)-1] - concentrations[0]
+     concentration_stepsize = concentration_steprange / 99
+     concentration_line_xaxis = []
+     concentration_lowerline_yaxis = []
+     concentration_higherline_yaxis = []
+     current_conc = concentrations[0]
+     for i in range(100):
+         concentration_line_xaxis.append(current_conc)
+         concentration_lowerline_yaxis.append(lower_slope * current_conc + lower_intercept)
+         concentration_higherline_yaxis.append(higher_slope * current_conc + higher_intercept)
+     plt.scatter(concentration_line_xaxis, concentration_lowerline_yaxis, "r--")
+     plt.scatter(concentration_line_xaxis, concentration_higherline_yaxis, "g--")
+     cmc_x = []
+     cmc_y = []
+     cmc_x.append(cmc)
+     cmc_y.append(cmc*lower_slope + lower_intercept)
+     plt.show()
+
+
+
+
+
         
 
 
