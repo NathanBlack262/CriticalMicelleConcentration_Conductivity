@@ -2,6 +2,15 @@ import math
 import statistics
 import matplotlib.pyplot as plt
 
+TEST_CONCENTRATIONS = [6.003, 6.671, 7.412, \
+     8.236, 9.151, 10.167, 11.297, 12.552, 13.947, \
+          15.497, 17.219, 19.132, 21.258, 23.620, \
+               26.244, 29.160, 32.400, 36.000, 40.000]
+
+TEST_CONDUCTIVITIES = [353, 389, 430, 471, 522, 574, 635, 694, \
+    762, 828, 890, 952, 1014, 1079, 1145, 1222, 1304, 1393, 1492]
+
+
 def determine_cmc(concentrations, conductivities):
     lower_rsqaured_optimized = 0
     lower_linearregion_index_inclusive = 2
@@ -45,7 +54,19 @@ def plot_cmc(concentrations, conductivities, cmc, lower_slope, lower_intercept, 
      cmc_y = []
      cmc_x.append(cmc)
      cmc_y.append(cmc*lower_slope + lower_intercept)
+     plt.scatter(cmc_x, cmc_y, "b")
      plt.show()
+
+
+def test_main():
+    cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, higher_intercept, \
+         higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
+              higher_linearregion_index_inclusive = determine_cmc(TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES)
+    plot_cmc(TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES, cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, \
+     higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive)
+    
+
+
 
 
 
