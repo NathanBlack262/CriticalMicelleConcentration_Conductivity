@@ -64,6 +64,10 @@ def test_main():
               higher_linearregion_index_inclusive = determine_cmc(TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES)
     plot_cmc(TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES, cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, \
      higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive)
+
+
+if __name__ == "__main__":
+    test_main()
     
 
 
