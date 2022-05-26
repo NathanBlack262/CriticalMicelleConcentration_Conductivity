@@ -6,7 +6,7 @@ import csv
 TEST_CONCENTRATIONS = [6.003, 6.671, 7.412, \
      8.236, 9.151, 10.167, 11.297, 12.552, 13.947, \
           15.497, 17.219, 19.132, 21.258, 23.620, \
-               "", 29.160, 32.400, 36.000, 40.000]
+               26.244, 29.160, 32.400, 36.000, 40.000]
 
 TEST_CONDUCTIVITIES = [353, 389, 430, 471, 522, 574, 635, 694, \
     762, 828, 890, 952, 1014, 1079, 1145, 1222, 1304, 1393, 1492]
@@ -107,15 +107,15 @@ def write_txtdata(txt_filename, concentrations, conductivities, notes, cmc, lowe
      lower_rsqaured_optimized, higher_slope, higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
          higher_linearregion_index_inclusive):
     with open(txt_filename + ".txt", "w") as output_txtfile:
-        output_txtfile.write("NOTES FOR RUN: \n" + notes + "\n")
+        output_txtfile.write("NOTES FOR RUN: \n" + notes + "\n\n")
         output_txtfile.write("SUMMARY OF DATA ANALYSIS FOR RUN: \n")
-        output_txtfile.write("CMC: " + str(cmc))
-        output_txtfile.write("Lower Line: y = " + str(lower_slope) + "x + " + str(lower_intercept) + "(R^2 = " + str(lower_rsqaured_optimized) + ")\n")
-        output_txtfile.write("Num. Points Used: " + str(lower_linearregion_index_inclusive + 1))
-        output_txtfile.write("Higher Line: y = " + str(higher_slope) + "x + " + str(higher_intercept) + "(R^2 = " + str(higher_rsqaured_optimized) + ")\n")
+        output_txtfile.write("CMC: " + str(cmc) + " mM\n")
+        output_txtfile.write("Lower Line: y = " + str(lower_slope) + "x + " + str(lower_intercept) + " (R^2 = " + str(lower_rsqaured_optimized) + ")\n")
+        output_txtfile.write("Num. Points Used: " + str(lower_linearregion_index_inclusive + 1) + "\n")
+        output_txtfile.write("Higher Line: y = " + str(higher_slope) + "x + " + str(higher_intercept) + " (R^2 = " + str(higher_rsqaured_optimized) + ")\n")
         output_txtfile.write("Num. Points Used: " + str(len(concentrations) - higher_linearregion_index_inclusive) + "\n\n\n")
         output_txtfile.write("DATA FOR RUN: \n")
-        output_txtfile.write("Concentrations (mM), Conductivity (" + u"\u03bcS/cm)\n")
+        output_txtfile.write("Concentrations (mM), Conductivity (uS/cm)\n")
         for i in range(len(concentrations)):
             output_txtfile.write(str(concentrations[i]) + ", " + str(conductivities[i]) + "\n")
     output_txtfile.close()
@@ -129,6 +129,9 @@ def test_main(notes, output_filename):
          higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
               higher_linearregion_index_inclusive = determine_cmc(concentrations, conductivities)
     write_csvdata(output_filename, concentrations, conductivities)
+    write_txtdata(output_filename, concentrations, conductivities, notes, cmc, lower_slope, lower_intercept, \
+     lower_rsqaured_optimized, higher_slope, higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
+         higher_linearregion_index_inclusive)
     plot_cmc(concentrations, conductivities, cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, \
      higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive, notes)
 
