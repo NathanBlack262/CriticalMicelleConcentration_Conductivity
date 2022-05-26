@@ -93,6 +93,7 @@ def read_csvdata(csv_filename):
     input_csvfile.close()
     return concentrations, conductivities
 
+
 def write_csvdata(csv_filename, concentrations, conductivities):
     with open (csv_filename + ".csv", mode="w") as output_csvfile:
         output_csvwriter = csv.writer(output_csvfile)
@@ -100,6 +101,26 @@ def write_csvdata(csv_filename, concentrations, conductivities):
         for i in range(len(concentrations)):
             output_csvwriter.writerow(concentrations[i], conductivities[i])
     output_csvfile.close()
+    return
+
+def write_txtdata(txt_filename, concentrations, conductivities, notes, cmc, lower_slope, lower_intercept, \
+     lower_rsqaured_optimized, higher_slope, higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
+         higher_linearregion_index_inclusive):
+    with open(txt_filename + ".txt", "w") as output_txtfile:
+        output_txtfile.write("NOTES FOR RUN: \n" + notes + "\n")
+        output_txtfile.write("SUMMARY OF DATA ANALYSIS FOR RUN: \n")
+        output_txtfile.write("CMC: " + str(cmc))
+        output_txtfile.write("Lower Line: y = " + str(lower_slope) + "x + " + str(lower_intercept) + "(R^2 = " + str(lower_rsqaured_optimized) + ")\n")
+        output_txtfile.write("Num. Points Used: " + str(lower_linearregion_index_inclusive + 1))
+        output_txtfile.write("Higher Line: y = " + str(higher_slope) + "x + " + str(higher_intercept) + "(R^2 = " + str(higher_rsqaured_optimized) + ")\n")
+        output_txtfile.write("Num. Points Used: " + str(len(concentrations) - higher_linearregion_index_inclusive) + "\n\n\n")
+        output_txtfile.write("DATA FOR RUN: \n")
+        output_txtfile.write("Concentrations (mM), Conductivity (" + u"\u03bcS/cm)\n")
+        for i in range(len(concentrations)):
+            output_txtfile.write(str(concentrations[i]) + ", " + str(conductivities[i]) + "\n")
+    output_txtfile.close()
+
+
 
 
 
