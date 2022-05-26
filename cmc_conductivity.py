@@ -3,20 +3,11 @@ import statistics
 import matplotlib.pyplot as plt
 import csv
 
-TEST_CONCENTRATIONS = [6.003, 6.671, 7.412, \
-     8.236, 9.151, 10.167, 11.297, 12.552, 13.947, \
-          15.497, 17.219, 19.132, 21.258, 23.620, \
-               26.244, 29.160, 32.400, 36.000, 40.000]
-
-TEST_CONDUCTIVITIES = [353, 389, 430, 471, 522, 574, 635, 694, \
-    762, 828, 890, 952, 1014, 1079, 1145, 1222, 1304, 1393, 1492]
-
-
 def determine_cmc(concentrations, conductivities):
     lower_rsqaured_optimized = 0
     lower_linearregion_index_inclusive = 2
     for i in range(3, len(concentrations)):
-        lower_rsquared = statistics.correlation(concentrations[0:i], conductivities[0:i])
+        lower_rsquared = statistics.correlation(concentrations[0:i], conductivities[0:i]) ** 2
         if lower_rsquared >= lower_rsqaured_optimized:
             lower_rsqaured_optimized = lower_rsquared
             lower_linearregion_index_inclusive = i - 1
@@ -24,7 +15,7 @@ def determine_cmc(concentrations, conductivities):
     higher_linearregion_index_inclusive = lower_linearregion_index_inclusive + 1
     for i in range(3, len(concentrations)):
         higher_rsquared = statistics.correlation(concentrations[len(concentrations)-(i+1):len(concentrations)-1], 
-        conductivities[len(conductivities)-(i+1):len(conductivities)-1])
+        conductivities[len(conductivities)-(i+1):len(conductivities)-1]) ** 2
         if higher_rsquared >=  higher_rsqaured_optimized:
             higher_rsqaured_optimized = higher_rsquared
             higher_linearregion_index_inclusive = len(concentrations) - i
@@ -88,8 +79,12 @@ def read_csvdata(csv_filename):
         row_counter = 0
         for row in input_csvreader:
             if row_counter != 0:
-                concentrations.append(row[0])
-                conductivities.append(row[1])
+                try:
+                    concentrations.append(float(row[0]))
+                    conductivities.append(float(row[1]))
+                except:
+                    pass
+            row_counter += 1
     input_csvfile.close()
     return concentrations, conductivities
 
@@ -123,7 +118,8 @@ def write_txtdata(txt_filename, concentrations, conductivities, notes, cmc, lowe
 
 
 
-def test_main(notes, output_filename):
+def test_main(notes, input_filename, output_filename):
+    TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES = read_csvdata(input_filename)
     concentrations, conductivities = filter_measurements(TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES)
     cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, higher_intercept, \
          higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
@@ -137,7 +133,7 @@ def test_main(notes, output_filename):
 
 
 if __name__ == "__main__":
-    test_main("Undecyl Alanine in the Presence of Ethylenediamine Counterion\npH 8 at 298 K", "output")
+    test_main("Undecyl Alanine in the Presence of Ethylenediamine Counterion\npH 8 at 298 K", "input", "output")
     
 
 
