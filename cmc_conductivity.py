@@ -97,9 +97,9 @@ def read_csvdata(csv_filename):
 def write_csvdata(csv_filename, concentrations, conductivities):
     with open (csv_filename + ".csv", mode="w") as output_csvfile:
         output_csvwriter = csv.writer(output_csvfile)
-        output_csvwriter.writerow("Surfactant Concentration (mM)", "Conductivity (" + u"\u03bcS/cm)")
+        output_csvwriter.writerow(["Surfactant Concentration (mM)", "Conductivity (uS/cm)"])
         for i in range(len(concentrations)):
-            output_csvwriter.writerow(concentrations[i], conductivities[i])
+            output_csvwriter.writerow([str(concentrations[i]),str(conductivities[i])])
     output_csvfile.close()
     return
 
@@ -123,28 +123,18 @@ def write_txtdata(txt_filename, concentrations, conductivities, notes, cmc, lowe
 
 
 
-
-        
-
-
-
-
-
-
-
-
-
-def test_main(notes):
+def test_main(notes, output_filename):
     concentrations, conductivities = filter_measurements(TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES)
     cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, higher_intercept, \
          higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
               higher_linearregion_index_inclusive = determine_cmc(concentrations, conductivities)
+    write_csvdata(output_filename, concentrations, conductivities)
     plot_cmc(concentrations, conductivities, cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, \
      higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive, notes)
 
 
 if __name__ == "__main__":
-    test_main("Undecyl Alanine in the Presence of Ethylenediamine Counterion\npH 8 at 298 K")
+    test_main("Undecyl Alanine in the Presence of Ethylenediamine Counterion\npH 8 at 298 K", "output")
     
 
 
