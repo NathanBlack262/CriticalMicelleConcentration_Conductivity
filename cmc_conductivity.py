@@ -6,7 +6,7 @@ import csv
 TEST_CONCENTRATIONS = [6.003, 6.671, 7.412, \
      8.236, 9.151, 10.167, 11.297, 12.552, 13.947, \
           15.497, 17.219, 19.132, 21.258, 23.620, \
-               26.244, 29.160, 32.400, 36.000, 40.000]
+               "", 29.160, 32.400, 36.000, 40.000]
 
 TEST_CONDUCTIVITIES = [353, 389, 430, 471, 522, 574, 635, 694, \
     762, 828, 890, 952, 1014, 1079, 1145, 1222, 1304, 1393, 1492]
@@ -135,10 +135,11 @@ def write_txtdata(txt_filename, concentrations, conductivities, notes, cmc, lowe
 
 
 def test_main(notes):
+    concentrations, conductivities = filter_measurements(TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES)
     cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, higher_intercept, \
          higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
-              higher_linearregion_index_inclusive = determine_cmc(TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES)
-    plot_cmc(TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES, cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, \
+              higher_linearregion_index_inclusive = determine_cmc(concentrations, conductivities)
+    plot_cmc(concentrations, conductivities, cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, \
      higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive, notes)
 
 
