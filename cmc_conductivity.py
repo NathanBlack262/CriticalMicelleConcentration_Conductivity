@@ -92,6 +92,17 @@ def read_csvdata(csv_filename):
                 conductivities.append(row[1])
     input_csvfile.close()
     return concentrations, conductivities
+
+def write_csvdata(csv_filename, concentrations, conductivities):
+    with open (csv_filename + ".csv", mode="w") as output_csvfile:
+        output_csvwriter = csv.writer(output_csvfile)
+        output_csvwriter.writerow("Surfactant Concentration (mM)", "Conductivity (" + u"\u03bcS/cm)")
+        for i in range(len(concentrations)):
+            output_csvwriter.writerow(concentrations[i], conductivities[i])
+    output_csvfile.close()
+
+
+
         
 
 
