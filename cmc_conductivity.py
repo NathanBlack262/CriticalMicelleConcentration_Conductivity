@@ -63,6 +63,24 @@ def plot_cmc(concentrations, conductivities, cmc, lower_slope, lower_intercept, 
      plt.show()
 
 
+def filter_measurements(concentrations_init, conductivities_init):
+    bad_indexes = []
+    for i in range(len(concentrations_init)):
+        try:
+            test_conc = float(concentrations_init[i])
+            test_cond = int(conductivities_init[i])
+        except:
+            bad_indexes.append(i)
+    concentrations = []
+    conductivities = []
+    for i in range(len(concentrations_init)):
+        if i not in bad_indexes:
+            concentrations.append(concentrations_init[i])
+            conductivities.append(conductivities_init[i])
+    return concentrations, conductivities
+
+
+
 def test_main(notes):
     cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, higher_intercept, \
          higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
