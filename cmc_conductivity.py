@@ -1,6 +1,7 @@
 import math
 import statistics
 import matplotlib.pyplot as plt
+import csv
 
 TEST_CONCENTRATIONS = [6.003, 6.671, 7.412, \
      8.236, 9.151, 10.167, 11.297, 12.552, 13.947, \
@@ -78,6 +79,26 @@ def filter_measurements(concentrations_init, conductivities_init):
             concentrations.append(concentrations_init[i])
             conductivities.append(conductivities_init[i])
     return concentrations, conductivities
+
+def read_csvdata(csv_filename):
+    concentrations = []
+    conductivities = []
+    with open (csv_filename + ".csv", mode="r") as input_csvfile:
+        input_csvreader = csv.reader(input_csvfile)
+        row_counter = 0
+        for row in input_csvreader:
+            if row_counter != 0:
+                concentrations.append(row[0])
+                conductivities.append(row[1])
+    input_csvfile.close()
+    return concentrations, conductivities
+        
+
+
+
+
+
+
 
 
 
