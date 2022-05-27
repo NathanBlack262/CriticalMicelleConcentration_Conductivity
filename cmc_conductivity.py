@@ -26,6 +26,15 @@ def determine_cmc(concentrations, conductivities):
     cmc = (higher_intercept - lower_intercept) / (lower_slope - higher_slope)
     return cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive
 
+def determine_dgmicellization(temp, num_chargedgroups, charge_pergroup, num_tails, charge_percounterion, lower_slope, higher_slope, cmc):
+    beta = (lower_slope-higher_slope)/lower_slope
+    term1 = 8.314 * temp * (1/num_tails + beta * (num_chargedgroups/num_tails) \
+    * math.fabs(charge_pergroup/charge_percounterion)) * math.log(cmc)
+    term2 = 8.314 * temp * (beta * ((num_chargedgroups/num_tails)*math.fabs(charge_pergroup/charge_percounterion)) \
+        * math.log(((num_chargedgroups/num_tails)*math.fabs(charge_pergroup/charge_percounterion))) \
+        - math.log(num_tails)/num_tails)
+    return term1 + term2
+
 def plot_cmc(concentrations, conductivities, cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, \
      higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive, notes):
      plt.scatter(concentrations,conductivities,color="k")
@@ -71,21 +80,22 @@ def filter_measurements(concentrations_init, conductivities_init):
             conductivities.append(conductivities_init[i])
     return concentrations, conductivities
 
-def read_csvdata(csv_filename):
-    concentrations = []
-    conductivities = []
-    with open (csv_filename + ".csv", mode="r") as input_csvfile:
-        input_csvreader = csv.reader(input_csvfile)
-        row_counter = 0
-        for row in input_csvreader:
-            if row_counter != 0:
-                try:
-                    concentrations.append(float(row[0]))
-                    conductivities.append(float(row[1]))
-                except:
-                    pass
-            row_counter += 1
-    input_csvfile.close()
+def read_csvdata(csv_filename, mode_readsimple=True):
+    if mode_readsimple:
+        concentrations = []
+        conductivities = []
+        with open (csv_filename + ".csv", mode="r") as input_csvfile:
+            input_csvreader = csv.reader(input_csvfile)
+            row_counter = 0
+            for row in input_csvreader:
+                if row_counter != 0:
+                    try:
+                        concentrations.append(float(row[0]))
+                        conductivities.append(float(row[1]))
+                    except:
+                        pass
+                row_counter += 1
+        input_csvfile.close()
     return concentrations, conductivities
 
 
@@ -118,12 +128,14 @@ def write_txtdata(txt_filename, concentrations, conductivities, notes, cmc, lowe
 
 
 
-def test_main(notes, input_filename, output_filename):
+def test_main(notes, input_filename, output_filename, temp, num_chargedgroups, charge_pergroup, num_tails, charge_percounterion):
     TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES = read_csvdata(input_filename)
     concentrations, conductivities = filter_measurements(TEST_CONCENTRATIONS, TEST_CONDUCTIVITIES)
     cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, higher_intercept, \
          higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
               higher_linearregion_index_inclusive = determine_cmc(concentrations, conductivities)
+    dg_micellization = determine_dgmicellization(temp, num_chargedgroups, charge_pergroup, num_tails, charge_percounterion, lower_slope, higher_slope, cmc)
+    print(dg_micellization)
     write_csvdata(output_filename, concentrations, conductivities)
     write_txtdata(output_filename, concentrations, conductivities, notes, cmc, lower_slope, lower_intercept, \
      lower_rsqaured_optimized, higher_slope, higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
@@ -133,7 +145,7 @@ def test_main(notes, input_filename, output_filename):
 
 
 if __name__ == "__main__":
-    test_main("Undecyl Alanine in the Presence of Ethylenediamine Counterion\npH 8 at 298 K", "input", "output")
+    test_main("Undecyl Alanine in the Presence of Ethylenediamine Counterion\npH 8 at 298 K", "input", "output", 298, 1, -1, 1, 1)
     
 
 
