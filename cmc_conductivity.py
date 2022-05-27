@@ -127,7 +127,7 @@ def write_csvdata(csv_filename, concentrations, conductivities):
 
 def write_txtdata(txt_filename, concentrations, conductivities, notes, cmc, lower_slope, lower_intercept, \
      lower_rsqaured_optimized, higher_slope, higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
-         higher_linearregion_index_inclusive):
+         higher_linearregion_index_inclusive, dg_micellization):
     with open(txt_filename + ".txt", "w") as output_txtfile:
         output_txtfile.write("NOTES FOR RUN: \n" + notes + "\n\n")
         output_txtfile.write("SUMMARY OF DATA ANALYSIS FOR RUN: \n")
@@ -135,7 +135,8 @@ def write_txtdata(txt_filename, concentrations, conductivities, notes, cmc, lowe
         output_txtfile.write("Lower Line: y = " + str(lower_slope) + "x + " + str(lower_intercept) + " (R^2 = " + str(lower_rsqaured_optimized) + ")\n")
         output_txtfile.write("Num. Points Used: " + str(lower_linearregion_index_inclusive + 1) + "\n")
         output_txtfile.write("Higher Line: y = " + str(higher_slope) + "x + " + str(higher_intercept) + " (R^2 = " + str(higher_rsqaured_optimized) + ")\n")
-        output_txtfile.write("Num. Points Used: " + str(len(concentrations) - higher_linearregion_index_inclusive) + "\n\n\n")
+        output_txtfile.write("Num. Points Used: " + str(len(concentrations) - higher_linearregion_index_inclusive) + "\n\n")
+        output_txtfile.write("Delta G for Micellization: " + str(dg_micellization) + " J/mol\n\n\n")
         output_txtfile.write("DATA FOR RUN: \n")
         output_txtfile.write("Concentrations (mM), Conductivity (uS/cm)\n")
         for i in range(len(concentrations)):
@@ -156,7 +157,7 @@ def test_main(notes, input_filename, output_filename, temp, num_chargedgroups, c
     write_csvdata(output_filename, concentrations, conductivities)
     write_txtdata(output_filename, concentrations, conductivities, notes, cmc, lower_slope, lower_intercept, \
      lower_rsqaured_optimized, higher_slope, higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, \
-         higher_linearregion_index_inclusive)
+         higher_linearregion_index_inclusive, dg_micellization)
     plot_cmc(concentrations, conductivities, cmc, lower_slope, lower_intercept, lower_rsqaured_optimized, higher_slope, \
      higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive, notes)
 
