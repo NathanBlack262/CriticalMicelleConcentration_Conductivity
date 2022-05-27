@@ -81,12 +81,12 @@ def filter_measurements(concentrations_init, conductivities_init):
     return concentrations, conductivities
 
 def read_csvdata(csv_filename, mode_readsimple=True):
-    if mode_readsimple:
-        concentrations = []
-        conductivities = []
-        with open (csv_filename + ".csv", mode="r") as input_csvfile:
-            input_csvreader = csv.reader(input_csvfile)
-            row_counter = 0
+    concentrations = []
+    conductivities = []
+    with open (csv_filename + ".csv", mode="r") as input_csvfile:
+        input_csvreader = csv.reader(input_csvfile)
+        row_counter = 0
+        if mode_readsimple:
             for row in input_csvreader:
                 if row_counter != 0:
                     try:
@@ -95,7 +95,24 @@ def read_csvdata(csv_filename, mode_readsimple=True):
                     except:
                         pass
                 row_counter += 1
-        input_csvfile.close()
+        else:
+            conc_index = 0
+            cond_index = 0
+            for row in input_csvreader:
+                if row_counter == 0:
+                    for i in range(len(row)):
+                        if row[i] == "Concentration (mM)":
+                            conc_index = i
+                        elif row[i] == "Conductivities (uS/cm)":
+                            cond_index = i
+                else:
+                    try:
+                        concentrations.append(float(row[conc_index]))
+                        conductivities.append(float(row[cond_index]))
+                    except:
+                        pass
+                row_counter += 1
+    input_csvfile.close()
     return concentrations, conductivities
 
 
