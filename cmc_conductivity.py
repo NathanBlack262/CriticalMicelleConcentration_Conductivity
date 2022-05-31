@@ -3,6 +3,7 @@ import statistics
 import matplotlib.pyplot as plt
 import csv
 import tkinter
+import tkinter.filedialog
 
 def determine_cmc(concentrations, conductivities):
     lower_rsqaured_optimized = 0
@@ -81,10 +82,11 @@ def filter_measurements(concentrations_init, conductivities_init):
             conductivities.append(conductivities_init[i])
     return concentrations, conductivities
 
-def read_csvdata(csv_filename, mode_readsimple=True):
+def read_csvdata(mode_readsimple=True):
+    csv_filename = tkinter.filedialog.askopenfilename()
     concentrations = []
     conductivities = []
-    with open (csv_filename + ".csv", mode="r") as input_csvfile:
+    with open (csv_filename, mode="r") as input_csvfile:
         input_csvreader = csv.reader(input_csvfile)
         row_counter = 0
         if mode_readsimple:
@@ -163,8 +165,30 @@ def test_main(notes, input_filename, output_filename, temp, num_chargedgroups, c
      higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive, notes)
 
 
+def donothing():
+    pass
+
+def create_taskbarbuttons(window):
+    taskbar = tkinter.Menu(window)
+    filemenu = tkinter.Menu(taskbar)
+    filemenu.add_command(label="Load (Simple)", command=read_csvdata())
+    filemenu.add_command(label="Load (Complex)", command=read_csvdata(mode_readsimple=False))
+    filemenu.add_command(label="Export Data", command=donothing)
+    taskbar.add_cascade(label="File", menu=filemenu)
+    configmenu = tkinter.Menu(taskbar)
+    configmenu.add_command(label="Enter Run Information", command=donothing)
+    configmenu.add_command(label="Define Dilution Scheme", command=donothing)
+    taskbar.add_cascade(label="Configure", menu=configmenu)
+    analyzemenu = tkinter.Menu(taskbar)
+    analyzemenu.add_command(label="Analyze Conductivity-Based Run")
+    taskbar.add_cascade(label="Analyze", menu=analyzemenu)
+    window.config(menu=taskbar)
+
+
+
 def main():
     window = tkinter.Tk()
+    create_taskbarbuttons(window)
     window.mainloop()
 
 
