@@ -2,6 +2,7 @@ import math
 import statistics
 import matplotlib.pyplot as plt
 import csv
+import tkinter
 
 def determine_cmc(concentrations, conductivities):
     lower_rsqaured_optimized = 0
@@ -162,8 +163,15 @@ def test_main(notes, input_filename, output_filename, temp, num_chargedgroups, c
      higher_intercept, higher_rsqaured_optimized, lower_linearregion_index_inclusive, higher_linearregion_index_inclusive, notes)
 
 
+def main():
+    window = tkinter.Tk()
+    window.mainloop()
+
+
+
 if __name__ == "__main__":
-    test_main("Undecyl Alanine in the Presence of Ethylenediamine Counterion\npH 8 at 298 K", "input", "output", 298, 1, -1, 1, 1)
+    main()
+    #test_main("Undecyl Alanine in the Presence of Ethylenediamine Counterion\npH 8 at 298 K", "input", "output", 298, 1, -1, 1, 1)
     
 
 
