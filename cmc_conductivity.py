@@ -5,6 +5,36 @@ import csv
 import tkinter
 import tkinter.filedialog
 
+class DataStorage:
+    def __init__(self):
+        self.concentrations = []
+        self.conductivities = []
+        self.cmc = 0
+        self.dg_micellization = 0
+        self.lower_slope = 0
+        self.lower_intercept = 0
+        self.lower_rsquared_optimized = 0
+        self.lower_linearregion_index_inclusive = 0
+        self.higher_slope = 0
+        self.higher_intercept = 0
+        self.higher_rsquared_optimized = 0
+        self.higher_linearregion_index_inclusive = 0
+        self.temp = 298.15
+        self.num_chargedgroups = 1 
+        self.charge_pergroup = -1
+        self.num_tails = 1
+        self.charge_percounterion = 1
+        self.notes = ""
+
+    
+    def set_data(self, concentrations, conductivities):
+        self.concentrations = concentrations
+        self.conductivities = conductivities
+
+
+GLOBAL_DATASTORAGE_OBJECT = DataStorage()
+
+
 def determine_cmc(concentrations, conductivities):
     lower_rsqaured_optimized = 0
     lower_linearregion_index_inclusive = 2
@@ -118,6 +148,39 @@ def read_csvdata(mode_readsimple=True):
     input_csvfile.close()
     return concentrations, conductivities
 
+def read_and_store_data():
+    concentrations, conductivities = read_csvdata()
+    concentrations, conductivities = filter_measurements(concentrations, conductivities)
+    GLOBAL_DATASTORAGE_OBJECT.set_data(concentrations, conductivities)
+    print(GLOBAL_DATASTORAGE_OBJECT.concentrations)
+
+def read_and_store_data_complex():
+    concentrations, conductivities = read_csvdata(mode_readsimple=False)
+    concentrations, conductivities = filter_measurements(concentrations, conductivities)
+    GLOBAL_DATASTORAGE_OBJECT.set_data(concentrations, conductivities)
+    print(GLOBAL_DATASTORAGE_OBJECT.concentrations)
+
+def analyze_data():
+    GLOBAL_DATASTORAGE_OBJECT.cmc, GLOBAL_DATASTORAGE_OBJECT.lower_slope, GLOBAL_DATASTORAGE_OBJECT.lower_intercept, \
+         GLOBAL_DATASTORAGE_OBJECT.lower_rsqaured_optimized, GLOBAL_DATASTORAGE_OBJECT.higher_slope, \
+         GLOBAL_DATASTORAGE_OBJECT.higher_intercept, GLOBAL_DATASTORAGE_OBJECT.higher_rsqaured_optimized, \
+             GLOBAL_DATASTORAGE_OBJECT.lower_linearregion_index_inclusive, \
+                 GLOBAL_DATASTORAGE_OBJECT.higher_linearregion_index_inclusive \
+                  = determine_cmc(GLOBAL_DATASTORAGE_OBJECT.concentrations, GLOBAL_DATASTORAGE_OBJECT.conductivities)
+    GLOBAL_DATASTORAGE_OBJECT.dg_micellization = determine_dgmicellization(GLOBAL_DATASTORAGE_OBJECT.temp, \
+         GLOBAL_DATASTORAGE_OBJECT.num_chargedgroups, GLOBAL_DATASTORAGE_OBJECT.charge_pergroup, \
+             GLOBAL_DATASTORAGE_OBJECT.num_tails, GLOBAL_DATASTORAGE_OBJECT.charge_percounterion, \
+                 GLOBAL_DATASTORAGE_OBJECT.lower_slope, GLOBAL_DATASTORAGE_OBJECT.higher_slope, \
+                     GLOBAL_DATASTORAGE_OBJECT.cmc)
+    plot_cmc(GLOBAL_DATASTORAGE_OBJECT.concentrations, GLOBAL_DATASTORAGE_OBJECT.conductivities, GLOBAL_DATASTORAGE_OBJECT.cmc, \
+        GLOBAL_DATASTORAGE_OBJECT.lower_slope, GLOBAL_DATASTORAGE_OBJECT.lower_intercept, GLOBAL_DATASTORAGE_OBJECT.lower_rsqaured_optimized, \
+            GLOBAL_DATASTORAGE_OBJECT.higher_slope, GLOBAL_DATASTORAGE_OBJECT.higher_intercept, \
+                GLOBAL_DATASTORAGE_OBJECT.higher_rsqaured_optimized, GLOBAL_DATASTORAGE_OBJECT.lower_linearregion_index_inclusive, \
+                     GLOBAL_DATASTORAGE_OBJECT.higher_linearregion_index_inclusive, GLOBAL_DATASTORAGE_OBJECT.notes)
+    
+    
+
+
 
 def write_csvdata(csv_filename, concentrations, conductivities):
     with open (csv_filename + ".csv", mode="w") as output_csvfile:
@@ -171,8 +234,8 @@ def donothing():
 def create_taskbarbuttons(window):
     taskbar = tkinter.Menu(window)
     filemenu = tkinter.Menu(taskbar)
-    filemenu.add_command(label="Load (Simple)", command=read_csvdata())
-    filemenu.add_command(label="Load (Complex)", command=read_csvdata(mode_readsimple=False))
+    filemenu.add_command(label="Load (Simple)", command=read_and_store_data)
+    filemenu.add_command(label="Load (Complex)", command=read_and_store_data_complex)
     filemenu.add_command(label="Export Data", command=donothing)
     taskbar.add_cascade(label="File", menu=filemenu)
     configmenu = tkinter.Menu(taskbar)
@@ -180,7 +243,7 @@ def create_taskbarbuttons(window):
     configmenu.add_command(label="Define Dilution Scheme", command=donothing)
     taskbar.add_cascade(label="Configure", menu=configmenu)
     analyzemenu = tkinter.Menu(taskbar)
-    analyzemenu.add_command(label="Analyze Conductivity-Based Run")
+    analyzemenu.add_command(label="Analyze Conductivity-Based Run", command=analyze_data)
     taskbar.add_cascade(label="Analyze", menu=analyzemenu)
     window.config(menu=taskbar)
 
