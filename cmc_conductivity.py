@@ -152,13 +152,13 @@ def read_and_store_data():
     concentrations, conductivities = read_csvdata()
     concentrations, conductivities = filter_measurements(concentrations, conductivities)
     GLOBAL_DATASTORAGE_OBJECT.set_data(concentrations, conductivities)
-    print(GLOBAL_DATASTORAGE_OBJECT.concentrations)
+    return
 
 def read_and_store_data_complex():
     concentrations, conductivities = read_csvdata(mode_readsimple=False)
     concentrations, conductivities = filter_measurements(concentrations, conductivities)
     GLOBAL_DATASTORAGE_OBJECT.set_data(concentrations, conductivities)
-    print(GLOBAL_DATASTORAGE_OBJECT.concentrations)
+    return
 
 def analyze_data():
     GLOBAL_DATASTORAGE_OBJECT.cmc, GLOBAL_DATASTORAGE_OBJECT.lower_slope, GLOBAL_DATASTORAGE_OBJECT.lower_intercept, \
@@ -177,6 +177,7 @@ def analyze_data():
             GLOBAL_DATASTORAGE_OBJECT.higher_slope, GLOBAL_DATASTORAGE_OBJECT.higher_intercept, \
                 GLOBAL_DATASTORAGE_OBJECT.higher_rsqaured_optimized, GLOBAL_DATASTORAGE_OBJECT.lower_linearregion_index_inclusive, \
                      GLOBAL_DATASTORAGE_OBJECT.higher_linearregion_index_inclusive, GLOBAL_DATASTORAGE_OBJECT.notes)
+    return
     
     
 
