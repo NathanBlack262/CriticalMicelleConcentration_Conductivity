@@ -134,9 +134,9 @@ def read_csvdata(mode_readsimple=True):
             for row in input_csvreader:
                 if row_counter == 0:
                     for i in range(len(row)):
-                        if row[i] == "Concentration (mM)":
+                        if row[i] == "Concentration":
                             conc_index = i
-                        elif row[i] == "Conductivities (uS/cm)":
+                        elif row[i] == "Conductivity":
                             cond_index = i
                 else:
                     try:
@@ -238,11 +238,16 @@ def create_taskbarbuttons(window):
     filemenu.add_command(label="Load (Simple)", command=read_and_store_data)
     filemenu.add_command(label="Load (Complex)", command=read_and_store_data_complex)
     filemenu.add_command(label="Export Data", command=donothing)
+    filemenu.add_separator()
+    filemenu.add_command(label="Quit",command=window.quit)
     taskbar.add_cascade(label="File", menu=filemenu)
     configmenu = tkinter.Menu(taskbar)
     configmenu.add_command(label="Enter Run Information", command=donothing)
     configmenu.add_command(label="Define Dilution Scheme", command=donothing)
     taskbar.add_cascade(label="Configure", menu=configmenu)
+    viewmenu = tkinter.Menu(taskbar)
+    viewmenu.add_command(label="View Run Information", command=donothing)
+    taskbar.add_cascade(label="View", menu=viewmenu)
     analyzemenu = tkinter.Menu(taskbar)
     analyzemenu.add_command(label="Analyze Conductivity-Based Run", command=analyze_data)
     taskbar.add_cascade(label="Analyze", menu=analyzemenu)
